@@ -1,0 +1,42 @@
+[build]
+  builder = "nixpacks"
+  buildCommand = "pip install -r py/requirements.txt"
+  startCommand = "uvicorn main:app --host 0.0.0.0 --port $PORT"
+
+[deploy]
+  startCommand = "uvicorn main:app --host 0.0.0.0 --port $PORT"
+  healthcheckPath = "/health"
+  healthcheckTimeout = 60
+  restartDelayMs = 1000
+  maxRestarts = 5
+
+[environment]
+  NODE_ENV = "production"
+  PYTHONUNBUFFERED = "1"
+  PYTHONPATH = "/app"
+
+[variables]
+  PORT = 8000
+  ENVIRONMENT = "production"
+  DEBUG = "False"
+
+[plugins]
+  [plugins.postgresql]
+    version = "14"
+
+[healthChecks]
+  [healthChecks.web]
+    path = "/health"
+    initialDelay = 10
+    periodSeconds = 30
+    timeoutSeconds = 5
+    successThreshold = 1
+    failureThreshold = 3
+fatal: LF would be replaced by CRLF in main.py# Override the line ending warning and add files anyway
+git -c core.autocrlf=false add .
+
+# Now commit the files
+git commit -m "Initial backend commit"
+
+# Push to the DEVELOPMENT branch (since that's your current branch)
+git push -u origin DEVELOPMENT
